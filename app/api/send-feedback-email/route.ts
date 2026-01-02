@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
-const OWNER_EMAIL = "chinmaypatil4u@gmail.com"; // Updated owner email
+const OWNER_EMAIL = "studio.chinmayy@gmail.com"; // Updated owner email
 
 export async function POST(request: NextRequest) {
   try {
@@ -197,7 +197,7 @@ export async function POST(request: NextRequest) {
           <div class="email-wrapper">
             <div class="header">
               <h1>Thank You for Your Feedback</h1>
-              <p>Chinmay Feedback Portal</p>
+              <p> Feedback Portal</p>
             </div>
             
             <div class="automated-notice">
