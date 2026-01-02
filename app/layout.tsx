@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   icons: {
     icon: "https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
     apple: "https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
+    shortcut: "https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
   },
 };
 
