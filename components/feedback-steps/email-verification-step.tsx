@@ -1,50 +1,58 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { CheckCircle2, XCircle, Mail } from "lucide-react"
-import type { FeedbackData } from "@/components/feedback-form"
+import { useState, useEffect } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { CheckCircle2, XCircle, Mail } from "lucide-react";
+import type { FeedbackData } from "@/components/feedback-form";
 
 interface Props {
-  data: FeedbackData
-  updateData: (update: Partial<FeedbackData>) => void
+  data: FeedbackData;
+  updateData: (update: Partial<FeedbackData>) => void;
 }
 
-const AUTHORIZED_EMAILS = [
-  "chinmaypatil4u@gmail.com",
-  "stevejobsforreal69@gmail.com",
-  "contact.rehanfx@gmail.com",
-  "client4@example.com",
-  "client5@example.com",
-]
+const getAuthorizedEmails = (): string[] => {
+  const emailsString = process.env.NEXT_PUBLIC_AUTHORIZED_EMAILS;
+  if (!emailsString) {
+    console.warn("NEXT_PUBLIC_AUTHORIZED_EMAILS not set, using default");
+    return ["chinmaypatil4u@gmail.com"];
+  }
+  return emailsString.split(",").map((email) => email.trim().toLowerCase());
+};
 
 export function EmailVerificationStep({ data, updateData }: Props) {
-  const [attemptedVerification, setAttemptedVerification] = useState(false)
-  const [showError, setShowError] = useState(false)
+  const [attemptedVerification, setAttemptedVerification] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [authorizedEmails, setAuthorizedEmails] = useState<string[]>([]);
+
+  useEffect(() => {
+    setAuthorizedEmails(getAuthorizedEmails());
+  }, []);
 
   const handleVerify = () => {
-    setAttemptedVerification(true)
-    const isValid = AUTHORIZED_EMAILS.some((email) => email === data.verificationEmail.toLowerCase().trim())
+    setAttemptedVerification(true);
+    const isValid = authorizedEmails.some(
+      (email) => email === data.verificationEmail.toLowerCase().trim()
+    );
 
     if (isValid) {
-      updateData({ isEmailVerified: true })
-      setShowError(false)
+      updateData({ isEmailVerified: true });
+      setShowError(false);
     } else {
-      updateData({ isEmailVerified: false })
-      setShowError(true)
+      updateData({ isEmailVerified: false });
+      setShowError(true);
     }
-  }
+  };
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.key === "Enter" && data.verificationEmail) {
-        handleVerify()
+        handleVerify();
       }
-    }
-    window.addEventListener("keydown", handleKeyPress)
-    return () => window.removeEventListener("keydown", handleKeyPress)
-  }, [data.verificationEmail])
+    };
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [data.verificationEmail]);
 
   return (
     <div className="min-h-[60vh] flex items-center justify-center bg-gray-50 px-4 py-8">
@@ -56,24 +64,29 @@ export function EmailVerificationStep({ data, updateData }: Props) {
             </div>
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 mb-1.5">Verify Your Access</h1>
+            <h1 className="text-2xl font-bold text-slate-900 mb-1.5">
+              Verify Your Access
+            </h1>
             <p className="text-sm text-slate-600 max-w-md mx-auto">
-              This feedback portal is private. Please enter your authorized email address to continue.
+              This feedback portal is private. Please enter your authorized
+              email address to continue.
             </p>
           </div>
         </div>
 
         <div className="space-y-3">
           <div className="space-y-1.5">
-            <label className="text-sm font-medium text-slate-900">Email Address</label>
+            <label className="text-sm font-medium text-slate-900">
+              Email Address
+            </label>
             <Input
               type="email"
               placeholder="example@gmail.com"
               value={data.verificationEmail}
               onChange={(e) => {
-                updateData({ verificationEmail: e.target.value })
-                setShowError(false)
-                setAttemptedVerification(false)
+                updateData({ verificationEmail: e.target.value });
+                setShowError(false);
+                setAttemptedVerification(false);
               }}
               className="h-11 text-sm px-3 rounded-lg border-gray-300 bg-white focus:border-slate-900 focus:ring-2 focus:ring-slate-900 transition-all cursor-text"
             />
@@ -90,7 +103,9 @@ export function EmailVerificationStep({ data, updateData }: Props) {
           {attemptedVerification && data.isEmailVerified && (
             <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-lg">
               <CheckCircle2 className="h-4 w-4 text-green-600 flex-shrink-0" />
-              <p className="text-xs text-green-800 font-medium">Email verified! You can proceed to the next step.</p>
+              <p className="text-xs text-green-800 font-medium">
+                Email verified! You can proceed to the next step.
+              </p>
             </div>
           )}
 
@@ -105,5 +120,5 @@ export function EmailVerificationStep({ data, updateData }: Props) {
         </div>
       </div>
     </div>
-  )
+  );
 }

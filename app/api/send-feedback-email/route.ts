@@ -1,22 +1,12 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
-const OWNER_EMAIL = "studio.chinmayy@gmail.com"; // Updated owner email
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+const OWNER_EMAIL = "studio.chinmayy@gmail.com"; // Replace with your email
 
 export async function POST(request: NextRequest) {
   try {
-    // Check if API key exists
-    const apiKey = process.env.RESEND_API_KEY;
-    if (!apiKey) {
-      console.error("[v0] RESEND_API_KEY is not set");
-      return NextResponse.json(
-        { error: "Email service is not configured. Please contact support." },
-        { status: 500 }
-      );
-    }
-
-    const resend = new Resend(apiKey);
-
     const formData = await request.json();
 
     if (
@@ -31,6 +21,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Trim and validate email format
     const clientEmail = formData.responseEmail.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(clientEmail)) {
@@ -197,7 +188,7 @@ export async function POST(request: NextRequest) {
           <div class="email-wrapper">
             <div class="header">
               <h1>Thank You for Your Feedback</h1>
-              <p> Feedback Portal</p>
+              <p>Chinmaytech Feedback Portal</p>
             </div>
             
             <div class="automated-notice">
@@ -350,12 +341,6 @@ export async function POST(request: NextRequest) {
                   formData.performanceObjectives
                 }</span>
               </div>
-              <div class="info-row">
-                <span class="info-label">Pricing Review</span>
-                <span class="info-value">${
-                  formData.pricingReview || "Not provided"
-                }</span>
-              </div>
 
               ${
                 formData.aspectsWellHandled ||
@@ -423,13 +408,13 @@ export async function POST(request: NextRequest) {
 
               <p class="brand-signature">
                 Best regards,<br>
-                Chinmay Team
+                Chinmaytech Team
               </p>
             </div>
 
             <div class="footer">
               <p class="footer-text">
-                © ${new Date().getFullYear()} Chinmay. All rights reserved.
+                © ${new Date().getFullYear()} Chinmaytech. All rights reserved.
               </p>
               <p class="footer-text">
                 This email was sent from our automated feedback portal at<br>
@@ -534,9 +519,6 @@ export async function POST(request: NextRequest) {
           <p><strong>Performance vs Objectives:</strong> ${
             formData.performanceObjectives
           }</p>
-          <p><strong>Pricing Review:</strong> ${
-            formData.pricingReview || "N/A"
-          }</p>
           
           <h2>Additional Feedback</h2>
           <p><strong>Aspects Well Handled:</strong> ${
@@ -559,68 +541,49 @@ export async function POST(request: NextRequest) {
               : ""
           }
           
-          <p style="margin-top: 30px; color: #666; font-size: 14px;">
-            Sent from Chinmay Feedback Portal - feedback.chinmaytech.in
-          </p>
+          <p style="margin-top: 40px; color: #6b7280;">This notification was automatically generated from your feedback portal at feedback.chinmaytech.in</p>
         </body>
       </html>
     `;
 
-    // Send client email
-    const clientEmailResult = await resend.emails.send({
-      from:"Feedback <no-reply@chinmaytech.in>",
-      to: clientEmail,
-      subject: "Thank You for Your Feedback - Chinmay",
+    const { data: clientData, error: clientError } = await resend.emails.send({
+      from: "Chinmaytech Feedback <no-reply@chinmaytech.in>",
+      to: clientEmail, // Use validated email
+      subject: "Thank you for your feedback - Chinmaytech",
       html: clientEmailContent,
     });
 
-    // Check if client email failed
-    if (clientEmailResult.error) {
-      console.error("[v0] Client email error:", clientEmailResult.error);
+    if (clientError) {
+      console.error("[v0] Client email error:", clientError);
       return NextResponse.json(
-        {
-          error: "Failed to send email",
-          details: clientEmailResult.error.message,
-        },
+        { error: clientError.message || "Failed to send client email" },
         { status: 500 }
       );
     }
 
-    // Send owner email
-    const ownerEmailResult = await resend.emails.send({
-      from: " Feedback <no-reply@chinmaytech.in>",
+    const { data: ownerData, error: ownerError } = await resend.emails.send({
+      from: "Chinmaytech Feedback <no-reply@chinmaytech.in>",
       to: OWNER_EMAIL,
-      subject: `New Feedback Received from ${formData.clientName}`,
+      subject: `🎉 New Feedback from ${formData.clientName} - ${formData.companyName}`,
       html: ownerEmailContent,
     });
 
-    // Check if owner email failed
-    if (ownerEmailResult.error) {
-      console.error("[v0] Owner email error:", ownerEmailResult.error);
-      // Still return success if client email was sent
-      return NextResponse.json({
-        success: true,
-        message: "Client email sent, but owner notification failed",
-        warning: ownerEmailResult.error.message,
-      });
+    if (ownerError) {
+      console.error("[v0] Owner email error:", ownerError);
+      // Don't fail the request if owner notification fails
     }
 
-    console.log("[v0] Client email sent:", clientEmailResult.data?.id);
-    console.log("[v0] Owner email sent:", ownerEmailResult.data?.id);
-
-    return NextResponse.json({
-      success: true,
-      message: "Emails sent successfully",
-      clientEmailId: clientEmailResult.data?.id,
-      ownerEmailId: ownerEmailResult.data?.id,
-    });
-  } catch (error: any) {
-    console.error("[v0] Error sending emails:", error);
+    console.log(
+      "[v0] Emails sent successfully - Client:",
+      clientData,
+      "Owner:",
+      ownerData
+    );
+    return NextResponse.json({ success: true, clientData, ownerData });
+  } catch (error) {
+    console.error("[v0] API error:", error);
     return NextResponse.json(
-      {
-        error: "Failed to send emails",
-        details: error?.message || "Unknown error",
-      },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }

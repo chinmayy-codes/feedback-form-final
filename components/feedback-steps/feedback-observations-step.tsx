@@ -1,22 +1,28 @@
-"use client"
+"use client";
 
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import type { FeedbackData } from "@/components/feedback-form"
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import type { FeedbackData } from "@/components/feedback-form";
 
 type Props = {
-  data: FeedbackData
-  updateData: (updates: Partial<FeedbackData>) => void
-}
+  data: FeedbackData;
+  updateData: (updates: Partial<FeedbackData>) => void;
+};
 
 export function FeedbackObservationsStep({ data, updateData }: Props) {
   return (
     <div className="space-y-8">
-      <h2 className="text-xl font-semibold text-black border-b border-gray-200 pb-4">Feedback & Observations</h2>
+      <h2 className="text-xl font-semibold text-black border-b border-gray-200 pb-4">
+        Feedback & Observations
+      </h2>
 
       <div className="space-y-6 animate-slide-up">
-        <Label htmlFor="aspectsWellHandled" className="text-base font-normal text-black block">
-          20. What aspects of the project do you feel were handled particularly well?
+        <Label
+          htmlFor="aspectsWellHandled"
+          className="text-base font-normal text-black block"
+        >
+          11. What aspects of the project do you feel were handled particularly
+          well?
         </Label>
         <Textarea
           id="aspectsWellHandled"
@@ -28,9 +34,15 @@ export function FeedbackObservationsStep({ data, updateData }: Props) {
         />
       </div>
 
-      <div className="space-y-6 animate-slide-up" style={{ animationDelay: "50ms" }}>
-        <Label htmlFor="areasForImprovement" className="text-base font-normal text-black block">
-          21. Are there any areas where you feel improvement is needed?
+      <div
+        className="space-y-6 animate-slide-up"
+        style={{ animationDelay: "50ms" }}
+      >
+        <Label
+          htmlFor="areasForImprovement"
+          className="text-base font-normal text-black block"
+        >
+          12. Are there any areas where you feel improvement is needed?
         </Label>
         <Textarea
           id="areasForImprovement"
@@ -42,9 +54,15 @@ export function FeedbackObservationsStep({ data, updateData }: Props) {
         />
       </div>
 
-      <div className="space-y-6 animate-slide-up" style={{ animationDelay: "100ms" }}>
-        <Label htmlFor="additionalComments" className="text-base font-normal text-black block">
-          22. Any additional comments or suggestions?
+      <div
+        className="space-y-6 animate-slide-up"
+        style={{ animationDelay: "100ms" }}
+      >
+        <Label
+          htmlFor="additionalComments"
+          className="text-base font-normal text-black block"
+        >
+          13. Any additional comments or suggestions?
         </Label>
         <Textarea
           id="additionalComments"
@@ -56,5 +74,5 @@ export function FeedbackObservationsStep({ data, updateData }: Props) {
         />
       </div>
     </div>
-  )
+  );
 }
