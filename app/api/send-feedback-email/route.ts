@@ -188,7 +188,7 @@ export async function POST(request: NextRequest) {
           <div class="email-wrapper">
             <div class="header">
               <h1>Thank You for Your Feedback</h1>
-              <p>Chinmaytech Feedback Portal</p>
+              <p> Feedback Portal</p>
             </div>
             
             <div class="automated-notice">
@@ -408,13 +408,13 @@ export async function POST(request: NextRequest) {
 
               <p class="brand-signature">
                 Best regards,<br>
-                Chinmaytech Team
+                Chinmay
               </p>
             </div>
 
             <div class="footer">
               <p class="footer-text">
-                © ${new Date().getFullYear()} Chinmaytech. All rights reserved.
+                © ${new Date().getFullYear()} Chinmay. All rights reserved.
               </p>
               <p class="footer-text">
                 This email was sent from our automated feedback portal at<br>
@@ -547,9 +547,9 @@ export async function POST(request: NextRequest) {
     `;
 
     const { data: clientData, error: clientError } = await resend.emails.send({
-      from: "Chinmaytech Feedback <no-reply@chinmaytech.in>",
+      from: "Feedback <no-reply@chinmaytech.in>",
       to: clientEmail, // Use validated email
-      subject: "Thank you for your feedback - Chinmaytech",
+      subject: "Thank you for your feedback - Chinmay",
       html: clientEmailContent,
     });
 
@@ -562,7 +562,7 @@ export async function POST(request: NextRequest) {
     }
 
     const { data: ownerData, error: ownerError } = await resend.emails.send({
-      from: "Chinmaytech Feedback <no-reply@chinmaytech.in>",
+      from: "Feedback <no-reply@chinmaytech.in>",
       to: OWNER_EMAIL,
       subject: `🎉 New Feedback from ${formData.clientName} - ${formData.companyName}`,
       html: ownerEmailContent,
