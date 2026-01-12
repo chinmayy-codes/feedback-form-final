@@ -6,13 +6,14 @@ import './globals.css'
 const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
+import type { Metadata } from "next";
+
 export const metadata: Metadata = {
   title: "Feedback Form",
   description: "We value your feedback. Please share your thoughts with us.",
   icons: {
-    icon: "https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
-    apple: "https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
-    shortcut: "https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
+    icon: "/feedback_icon.png",
+    apple: "/feedback_icon.png",
   },
 };
 
